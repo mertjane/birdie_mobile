@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_launch_gradient">
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="126dp"
+        android:layout_height="115dp"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="420dp"
+        android:alpha="0.2"
+        android:background="@drawable/circle_shape"
+        android:translationX="30dp"
+        android:translationY="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvWelcome"
+        tools:ignore="VisualLintBounds" />
+
+    <View
+        android:layout_width="187dp"
+        android:layout_height="170dp"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="-50dp"
+        android:layout_marginBottom="5dp"
+        android:alpha="0.2"
+        android:background="@drawable/circle_shape"
+        android:translationX="30dp"
+        android:translationY="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvSubtitle"
+        tools:ignore="VisualLintBounds" />
+
+    <View
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="276dp"
+        android:layout_marginBottom="108dp"
+        android:alpha="0.2"
+        android:background="@drawable/circle_shape"
+        android:translationX="-40dp"
+        android:translationY="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/ivBirdieLogo"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="VisualLintBounds" />
+
+
+    <ImageView
+        android:id="@+id/ivBirdieLogo"
+        android:layout_width="209dp"
+        android:layout_height="146dp"
+        android:contentDescription="@string/spinnerContent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_birdie_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.336"
+        app:tint="@color/white"
+        tools:ignore="ImageContrastCheck" />
+
+    <!-- Welcome Text -->
+
+    <!-- Subtitle -->
+
+    <TextView
+        android:id="@+id/tvWelcome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="32dp"
+        android:fontFamily="@font/poppins"
+        android:gravity="center"
+        android:text="@string/greetingActivityTxt"
+        android:textColor="@android:color/white"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:text="@string/greetingSubTxt"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvWelcome"
+        tools:ignore="TextContrastCheck" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnGetStarted"
+        android:layout_width="230dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="160dp"
+        android:backgroundTint="#2C2C2C"
+        android:text="@string/greetingBtnTxt"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Get Started Button -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

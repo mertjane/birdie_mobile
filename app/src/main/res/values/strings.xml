@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">Birdie</string>
+    <string name="app_logo">Birdie Logo</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="main_photo">Main Photo</string>
+    <string name="photo_2">Photo 2</string>
+    <string name="photo_3">Photo 3</string>
+    <string name="spinnerContent">Loading</string>
+    <string name="launchText">Find Your Perfect Match</string>
+
+    <!-- LoginActivity Strings -->
+    <string name="loginGreeting">Welcome Back!</string>
+    <string name="loginSubText">Sign in to continue your journey</string>
+    <string name="emailLabel">Email</string>
+    <string name="emailPlaceholder">johndoe@example.com</string>
+    <string name="pwdLabel">Password</string>
+    <string name="pwdPlaceholder">Enter your password</string>
+    <string name="forgotPwdText">Forgot Password?</string>
+    <string name="loginBtnText">Login</string>
+    <string name="facebookContent">Facebook Logo</string>
+    <string name="appleContent">Apple Logo</string>
+    <string name="googleContent">Google Logo</string>
+    <string name="registerTextSm">Don\'t you have an account?</string>
+    <string name="registerHref">Register</string>
+    <string name="dividerTxt">Or continue with</string>
+
+    <!-- RegisterActivity Strings -->
+    <string name="registerGreet">Create Account!</string>
+    <string name="registerSubText">Join us and find your perfect match</string>
+    <string name="nameLabel">Name</string>
+    <string name="namePlaceholder">John Doe</string>
+    <string name="confirmPwdLabel">Confirm Password</string>
+    <string name="confirmPwdPlaceholder">Confirm your password</string>
+    <string name="registerBtnTxt">Register</string>
+    <string name="signupDividerTxt">Or sign up with</string>
+    <string name="privacyCheckboxTxt">I agree to the Terms &amp; Conditions\nand Privacy Policy</string>
+    <string name="loginTextSm">Have an account already?</string>
+    <string name="loginHref">Login</string>
+
+
+    <!-- GreetingActivity Strings -->
+    <string name="greetingActivityTxt">Welcome to Birdie!</string>
+    <string name="greetingSubTxt">Excited to have you on board.\nLet\'s get started on your journey\nwith us.</string>
+    <string name="greetingBtnTxt">Get Started</string>
+</resources>

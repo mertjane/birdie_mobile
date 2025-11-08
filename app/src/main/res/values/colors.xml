@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="lime_green">#8BC34A</color>
+    <color name="lime_green_dark">#689F38</color>
+    <color name="lime_green_light">#AED581</color>
+
+    <!-- Neutral Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="white_90">#E6FFFFFF</color>
+    <color name="white_70">#B3FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="dark_gray">#333333</color>
+
+    <!-- Gray Scale -->
+    <color name="gray_200">#E0E0E0</color>
+    <color name="gray_300">#BDBDBD</color>
+    <color name="gray_400">#9E9E9E</color>
+    <color name="gray_500">#757575</color>
+    <color name="gray_600">#616161</color>
+    <color name="gray_700">#424242</color>
+    <color name="gray_800">#212121</color>
+
+    <!-- Background Colors -->
+    <color name="light_gray">#F5F5F5</color>
+
+    <!-- Accent Colors -->
+    <color name="purple">#7C4DFF</color>
+    <color name="pink">#FF6B9D</color>
+
+    <!-- Transparent -->
+    <color name="transparent">#00000000</color>
+</resources>

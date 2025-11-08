@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_launch_gradient"
+    tools:context=".LaunchActivity">
+
+
+    <!-- Birdie Logo Icon (White Bird) -->
+
+    <View
+        android:layout_width="110dp"
+        android:layout_height="94dp"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="160dp"
+        android:layout_marginBottom="320dp"
+        android:alpha="0.2"
+        android:background="@drawable/circle_shape"
+        android:translationX="30dp"
+        android:translationY="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvLoading" />
+
+    <View
+        android:layout_width="187dp"
+        android:layout_height="170dp"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="4dp"
+        android:alpha="0.2"
+        android:background="@drawable/circle_shape"
+        android:translationX="30dp"
+        android:translationY="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvLoading" />
+
+    <View
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="276dp"
+        android:layout_marginBottom="108dp"
+        android:alpha="0.2"
+        android:background="@drawable/circle_shape"
+        android:translationX="-40dp"
+        android:translationY="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/ivBirdieLogo"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- App Name "birdie" -->
+
+    <!-- Tagline -->
+
+    <!-- Loading Spinner (Circular) -->
+    <ImageView
+        android:id="@+id/ivBirdieLogo"
+        android:layout_width="209dp"
+        android:layout_height="146dp"
+        android:contentDescription="@string/spinnerContent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_birdie_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.336"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/tvTagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:fontFamily="@font/poppins"
+        android:text="@string/launchText"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAppName" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="32dp"
+        android:indeterminateTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTagline" />
+
+    <TextView
+        android:id="@+id/tvLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/poppins"
+        android:text="@string/spinnerContent"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBar" />
+
+    <TextView
+        android:id="@+id/tvAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/poppins"
+        android:letterSpacing="0.15"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivBirdieLogo" />
+
+    <!-- Loading Text -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
