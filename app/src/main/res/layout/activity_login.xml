@@ -1,358 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:id="@+id/main">
+    android:id="@+id/login">
 
     <!-- Logo -->
-
-    <!-- App Name -->
-
-    <!-- Welcome Text -->
-
     <ImageView
         android:id="@+id/ivLogo"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="40dp"
         android:contentDescription="@string/app_name"
         android:scaleType="centerCrop"
         android:src="@drawable/birdie_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/black" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Welcome -->
 
     <!-- Subtitle -->
     <TextView
         android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="3dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="64dp"
         android:fontFamily="@font/poppins"
         android:text="@string/loginGreeting"
         android:textColor="@color/black"
         android:textSize="28sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivLogo"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@id/ivLogo" />
 
-    <!-- Email Label -->
     <TextView
         android:id="@+id/tvSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/poppins"
+        android:layout_gravity="center_horizontal"
         android:text="@string/loginSubText"
         android:textColor="@color/gray_600"
         android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/tvWelcome"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvWelcome" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Email Label -->
     <TextView
         android:id="@+id/tvEmailLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:fontFamily="@font/poppins"
         android:text="@string/emailLabel"
         android:textColor="@color/black"
-        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Email Input -->
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/bg_input_field"
-        android:fontFamily="@font/poppins"
         android:hint="@string/emailPlaceholder"
-        android:importantForAutofill="no"
         android:inputType="textEmailAddress"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textColor="@color/gray_700"
-        android:textColorHint="@color/gray_400"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvEmailLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvEmailLabel" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Password Label -->
     <TextView
         android:id="@+id/tvPasswordLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="32dp"
-        android:fontFamily="@font/poppins"
         android:text="@string/pwdLabel"
         android:textColor="@color/black"
-        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etEmail"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etEmail" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Password Input -->
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="0dp"
         android:layout_height="56dp"
-        android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/bg_input_field_green"
-        android:fontFamily="@font/poppins"
         android:hint="@string/pwdPlaceholder"
-        android:importantForAutofill="no"
         android:inputType="textPassword"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textColor="@color/gray_700"
-        android:textColorHint="@color/gray_400"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvPasswordLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvPasswordLabel" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- Forgot Password -->
     <TextView
         android:id="@+id/tvForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="32dp"
-        android:fontFamily="@font/poppins"
+        android:layout_marginTop="8dp"
         android:text="@string/forgotPwdText"
         android:textColor="@color/lime_green"
-        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/etPassword"
         app:layout_constraintTop_toBottomOf="@id/etPassword" />
 
     <!-- Login Button -->
 
-    <!-- Or Continue With -->
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLogin"
+    <FrameLayout
+        android:id="@+id/btnLoginContainer"
         android:layout_width="0dp"
         android:layout_height="65dp"
         android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="@color/lime_green"
-        android:fontFamily="@font/poppins"
-        android:text="@string/loginBtnText"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:cornerRadius="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintTop_toBottomOf="@id/tvForgotPassword"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvForgotPassword" />
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- The Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/lime_green"
+            android:fontFamily="@font/poppins"
+            android:text="@string/loginBtnText"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/socialSection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvOrContinueWith"
-        tools:layout_editor_absoluteX="-48dp">
+        <!-- The ProgressBar (initially hidden) -->
+        <ProgressBar
+            android:id="@+id/loginProgress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:indeterminateTint="@color/white" />
 
-        <!-- Divider -->
+    </FrameLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ivGoogleLogoParent"
-            android:layout_width="110dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="55dp"
-            android:background="@drawable/bg_button_apple"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <!-- Apple logo -->
-            <ImageView
-                android:id="@+id/ivFacebookLogo"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="42dp"
-                android:contentDescription="@string/facebookContent"
-                android:src="@drawable/ic_facebook"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.487" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="110dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="55dp"
-            android:background="@drawable/bg_button_apple"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <!-- Apple logo -->
-            <ImageView
-                android:id="@+id/ivAppleLogo"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="42dp"
-                android:contentDescription="@string/appleContent"
-                android:src="@drawable/ic_apple"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.487" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="110dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="55dp"
-            android:background="@drawable/bg_button_apple"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <!-- Apple logo -->
-            <ImageView
-                android:id="@+id/ivGoogleLogo"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="42dp"
-                android:contentDescription="@string/googleContent"
-                android:src="@drawable/ic_google"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.487" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Login Link -->
+    <LinearLayout
+        android:id="@+id/registerLinkLayout"
         android:layout_width="0dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/btnLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="38dp"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/poppins_medium"
             android:text="@string/registerTextSm"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="@color/gray_700" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/navigateToRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="50dp"
+            android:layout_marginStart="4dp"
+            android:text="@string/registerHref"
             android:clickable="true"
             android:fontFamily="@font/poppins_medium"
-            android:text="@string/registerHref"
             android:textColor="@color/lime_green"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/tvOrContinueWith"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginBottom="-25dp"
-        android:fontFamily="@font/poppins"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:text="@string/dividerTxt"
-        android:textColor="@color/gray_500"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/socialSection"
-        app:layout_constraintEnd_toStartOf="@+id/lineRight"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
-
-    <View
-        android:id="@+id/lineLeft"
-        android:layout_width="100dp"
-        android:layout_height="1dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="27dp"
-        android:background="@color/gray_400"
-        app:layout_constraintBottom_toTopOf="@+id/socialSection"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <View
-        android:id="@+id/lineRight"
-        android:layout_width="100dp"
-        android:layout_height="1dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="27dp"
-        android:background="@color/gray_400"
-        app:layout_constraintBottom_toTopOf="@+id/socialSection"
-        app:layout_constraintEnd_toEndOf="parent" />
-
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,48 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:id="@+id/register">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp">
 
         <!-- Logo -->
-
-        <!-- App Name -->
-
-        <!-- Create Account Title -->
         <ImageView
             android:id="@+id/ivLogo"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_marginTop="4dp"
             android:contentDescription="@string/app_name"
             android:scaleType="centerCrop"
-            android:src="@drawable/birdie_logo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/black" />
+            android:src="@drawable/birdie_logo"/>
 
+        <!-- Create Account Title -->
         <TextView
             android:id="@+id/tvCreateAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
             android:fontFamily="@font/poppins"
             android:text="@string/registerGreet"
             android:textColor="@color/black"
             android:textSize="28sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteY="207dp" />
+            android:textStyle="bold" />
 
         <!-- Subtitle -->
         <TextView
@@ -50,39 +44,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_gravity="center_horizontal"
             android:fontFamily="@font/poppins"
             android:text="@string/registerSubText"
             android:textColor="@color/gray_600"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvCreateAccount" />
+            android:textSize="16sp" />
 
         <!-- Name Label -->
         <TextView
             android:id="@+id/tvNameLabel"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="32dp"
             android:fontFamily="@font/poppins"
             android:text="@string/nameLabel"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+            android:textStyle="bold" />
 
         <!-- Name Input -->
         <EditText
             android:id="@+id/etName"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
             android:background="@drawable/bg_input_field"
             android:fontFamily="@font/poppins"
             android:hint="@string/namePlaceholder"
@@ -92,37 +77,26 @@
             android:paddingEnd="16dp"
             android:textColor="@color/gray_700"
             android:textColorHint="@color/gray_400"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvNameLabel"
-            tools:ignore="VisualLintTextFieldSize,TextContrastCheck" />
+            android:textSize="16sp" />
 
         <!-- Email Label -->
         <TextView
             android:id="@+id/tvEmailLabel"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
             android:fontFamily="@font/poppins"
             android:text="@string/emailLabel"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etName" />
+            android:textStyle="bold" />
 
         <!-- Email Input -->
         <EditText
             android:id="@+id/etEmail"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
             android:background="@drawable/bg_input_field"
             android:fontFamily="@font/poppins"
             android:hint="@string/emailPlaceholder"
@@ -132,37 +106,26 @@
             android:paddingEnd="16dp"
             android:textColor="@color/gray_700"
             android:textColorHint="@color/gray_400"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvEmailLabel"
-            tools:ignore="VisualLintTextFieldSize,TextContrastCheck" />
+            android:textSize="16sp" />
 
         <!-- Password Label -->
         <TextView
             android:id="@+id/tvPasswordLabel"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
             android:fontFamily="@font/poppins"
             android:text="@string/pwdLabel"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etEmail" />
+            android:textStyle="bold" />
 
         <!-- Password Input -->
         <EditText
             android:id="@+id/etPassword"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
             android:background="@drawable/bg_input_field"
             android:fontFamily="@font/poppins"
             android:hint="@string/pwdPlaceholder"
@@ -172,40 +135,26 @@
             android:paddingEnd="16dp"
             android:textColor="@color/gray_700"
             android:textColorHint="@color/gray_400"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvPasswordLabel"
-            tools:ignore="VisualLintTextFieldSize,TextContrastCheck" />
+            android:textSize="16sp" />
 
         <!-- Confirm Password Label -->
         <TextView
             android:id="@+id/tvConfirmPasswordLabel"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
             android:fontFamily="@font/poppins"
             android:text="@string/confirmPwdLabel"
             android:textColor="@color/black"
             android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/etPassword" />
+            android:textStyle="bold" />
 
         <!-- Confirm Password Input -->
-
-
         <EditText
             android:id="@+id/etConfirmPassword"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
             android:background="@drawable/bg_input_field"
             android:fontFamily="@font/poppins"
             android:hint="@string/confirmPwdPlaceholder"
@@ -215,242 +164,181 @@
             android:paddingEnd="16dp"
             android:textColor="@color/gray_700"
             android:textColorHint="@color/gray_400"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvConfirmPasswordLabel"
-            app:layout_constraintVertical_bias="0.0"
-            tools:ignore="VisualLintTextFieldSize,TextContrastCheck" />
+            android:textSize="16sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnRegister"
-            android:layout_width="0dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="32dp"
-            android:backgroundTint="@color/lime_green"
-            android:fontFamily="@font/poppins"
-            android:text="@string/registerBtnTxt"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:cornerRadius="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword"
-            tools:ignore="VisualLintButtonSize,TextContrastCheck" />
-
+        <!-- Register Button with Progress -->
         <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="58dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etConfirmPassword">
+            android:id="@+id/btnRegisterContainer"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginTop="24dp">
+
+            <!-- The Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/lime_green"
+                android:fontFamily="@font/poppins"
+                android:text="@string/registerBtnTxt"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp" />
+
+            <!-- The ProgressBar (initially hidden) -->
+            <ProgressBar
+                android:id="@+id/registerProgress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminateTint="@color/white" />
+
+        </FrameLayout>
+
+        <!-- Privacy Checkbox -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <CheckBox
                 android:id="@+id/privacyCheckbox"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 android:textColor="@color/gray_500"
-                android:textIsSelectable="false"
                 android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textView4"
-                android:layout_width="295dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingLeft="48sp"
-                android:paddingTop="15sp"
-                android:text="@string/privacyCheckboxTxt" />
+                android:layout_weight="1"
+                android:paddingStart="8dp"
+                android:text="@string/privacyCheckboxTxt"
+                android:textColor="@color/gray_500"
+                android:textSize="14sp" />
+        </LinearLayout>
 
-        </FrameLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/socialSection"
+        <!-- Or Signup With -->
+        <!-- Or Signup With with lines -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvOrSignupWith"
-            tools:layout_editor_absoluteX="-48dp">
+            android:layout_marginTop="32dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <!-- Divider -->
+            <!-- Left line -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/gray_400" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/ivGoogleLogoParent"
-                android:layout_width="110dp"
+            <!-- Text -->
+            <TextView
+                android:id="@+id/tvOrSignupWith"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/poppins"
+                android:text="@string/signupDividerTxt"
+                android:textColor="@color/gray_500"
+                android:textSize="14sp" />
+
+            <!-- Right line -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/gray_400" />
+
+        </LinearLayout>
+
+
+        <!-- Social Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:weightSum="3">
+
+            <!-- Facebook -->
+            <ImageButton
+                android:id="@+id/btnFacebook"
+                android:layout_width="0dp"
                 android:layout_height="65dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="55dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/bg_button_apple"
-                android:clickable="true"
-                android:focusable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                android:src="@drawable/ic_facebook"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/facebookContent"
+                android:padding="16dp" />
 
-                <!-- Apple logo -->
-                <ImageView
-                    android:id="@+id/ivFacebookLogo"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginStart="42dp"
-                    android:contentDescription="@string/facebookContent"
-                    android:src="@drawable/ic_facebook"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.487" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="110dp"
+            <!-- Apple -->
+            <ImageButton
+                android:id="@+id/btnApple"
+                android:layout_width="0dp"
                 android:layout_height="65dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="55dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/bg_button_apple"
-                android:clickable="true"
-                android:focusable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent">
+                android:src="@drawable/ic_apple"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/appleContent"
+                android:padding="16dp" />
 
-                <!-- Apple logo -->
-                <ImageView
-                    android:id="@+id/ivAppleLogo"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginStart="42dp"
-                    android:contentDescription="@string/appleContent"
-                    android:src="@drawable/ic_apple"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.487" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="110dp"
+            <!-- Google -->
+            <ImageButton
+                android:id="@+id/btnGoogle"
+                android:layout_width="0dp"
                 android:layout_height="65dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="55dp"
+                android:layout_weight="1"
                 android:background="@drawable/bg_button_apple"
-                android:clickable="true"
-                android:focusable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent">
+                android:src="@drawable/ic_google"
+                android:scaleType="centerInside"
+                android:contentDescription="@string/googleContent"
+                android:padding="16dp" />
+        </LinearLayout>
 
-                <!-- Apple logo -->
-                <ImageView
-                    android:id="@+id/ivGoogleLogo"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_marginStart="42dp"
-                    android:contentDescription="@string/googleContent"
-                    android:src="@drawable/ic_google"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.487" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent">
+        <!-- Login Link -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="60dp"
-                android:layout_marginTop="5dp"
-                android:fontFamily="@font/poppins_medium"
                 android:text="@string/loginTextSm"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:fontFamily="@font/poppins_medium"
+                android:textColor="@color/gray_700" />
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/navigateToLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="58dp"
+                android:layout_marginStart="4dp"
+                android:text="@string/loginHref"
                 android:clickable="true"
                 android:fontFamily="@font/poppins_medium"
-                android:text="@string/loginHref"
                 android:textColor="@color/lime_green"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:textStyle="bold" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvOrSignupWith"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="13dp"
-            android:layout_marginBottom="-25dp"
-            android:fontFamily="@font/poppins"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/signupDividerTxt"
-            android:textColor="@color/gray_500"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/socialSection"
-            app:layout_constraintEnd_toStartOf="@+id/lineRight"
-            app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
-
-        <View
-            android:id="@+id/lineLeft"
-            android:layout_width="100dp"
-            android:layout_height="1dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginBottom="27dp"
-            android:background="@color/gray_400"
-            app:layout_constraintBottom_toTopOf="@+id/socialSection"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <View
-            android:id="@+id/lineRight"
-            android:layout_width="100dp"
-            android:layout_height="1dp"
-            android:layout_marginEnd="28dp"
-            android:layout_marginBottom="27dp"
-            android:background="@color/gray_400"
-            app:layout_constraintBottom_toTopOf="@+id/socialSection"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </ScrollView>

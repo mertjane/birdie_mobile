@@ -39,7 +39,7 @@ public class LaunchActivity extends AppCompatActivity {
     }
 
     private void navigateToHome() {
-        Intent intent = new Intent(LaunchActivity.this, HomeActivity.class);
+        Intent intent = new Intent(LaunchActivity.this, GreetingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
