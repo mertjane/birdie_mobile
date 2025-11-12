@@ -4,11 +4,15 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LaunchActivity extends AppCompatActivity {
+
+    private static final String TAG = "LaunchActivity";
 
     private static final int SPLASH_DURATION = 5000;
     private FirebaseAuth mAuth;
@@ -23,6 +27,11 @@ public class LaunchActivity extends AppCompatActivity {
         }
 
         mAuth = FirebaseAuth.getInstance();
+        // checkUserAuthentication();
+
+        mAuth.signOut();
+        Log.d(TAG, "User signed out");
+
         checkUserAuthentication();
     }
 

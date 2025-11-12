@@ -3,13 +3,21 @@ package com.dev.birdie;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.app.Activity;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import com.dev.birdie.helpers.GoogleSignInHelper;
+
+import com.dev.birdie.models.User;
+import com.dev.birdie.repositories.UserRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -28,6 +36,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private GoogleSignInHelper googleSignInHelper;
+    private ActivityResultLauncher<Intent> googleSignInLauncher;
+
+    private static final String TAG = "RegisterActivity";
+
     EditText editTextName, editTextEmail, editTextPwd, editTextConfirmPwd;
     MaterialButton btnRegister;
     ProgressBar progressBar;
@@ -38,6 +51,48 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
+
+        googleSignInHelper = new GoogleSignInHelper(this);
+
+        // Register activity result launcher for Google Sign-In
+        googleSignInLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Log.d(TAG, "Activity result received. Result code: " + result.getResultCode());
+
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        Log.d(TAG, "Result OK - processing sign-in");
+
+                        googleSignInHelper.handleSignInResult(data, new GoogleSignInHelper.OnGoogleSignInListener() {
+                            @Override
+                            public void onSuccess(String firebaseUid, String email, String displayName) {
+                                Log.d(TAG, "Google sign-in successful: " + email);
+                                createUserInBackend(firebaseUid, email, displayName);
+                            }
+
+                            @Override
+                            public void onFailure(String error) {
+                                Log.e(TAG, "Google sign-in failed: " + error);
+                                Toast.makeText(RegisterActivity.this, error, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                        Log.d(TAG, "User cancelled Google Sign-In");
+                        Toast.makeText(RegisterActivity.this, "Sign-in cancelled", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e(TAG, "Unknown result code: " + result.getResultCode());
+                    }
+                }
+        );
+
+        // Find Google Sign-In button and set click listener
+        // Make sure you have a button with this ID in your layout
+        findViewById(R.id.btnGoogle).setOnClickListener(v -> {
+            Log.d(TAG, "Google Sign-In button clicked");
+            Intent signInIntent = googleSignInHelper.getSignInIntent();
+            googleSignInLauncher.launch(signInIntent);
+        });
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.register), (v, insets) -> {
@@ -109,24 +164,114 @@ public class RegisterActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-
-                                // Hide progress when done
-                                progressBar.setVisibility(View.GONE);
-                                btnRegister.setEnabled(true);
-                                btnRegister.setText(getString(R.string.registerBtnTxt));
+                                Log.d(TAG, "Firebase registration complete. Success: " + task.isSuccessful());
 
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(RegisterActivity.this, "Register Success!", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                } else {
-                                    // If sign in fails, display a message to the user.
-                                    Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
+                                    if (firebaseUser != null) {
+                                        String firebaseUid = firebaseUser.getUid();
+                                        Log.d(TAG, "Firebase UID: " + firebaseUid);
+
+                                        // Create User object
+                                        User newUser = new User();
+                                        newUser.setFirebaseUid(firebaseUid);
+                                        newUser.setEmail(email);
+                                        newUser.setFullName(name);
+
+                                        Log.d(TAG, "User object created, calling UserRepository.insertUser");
+
+                                        // Insert into Neon database
+                                        UserRepository.insertUser(newUser, RegisterActivity.this,
+                                                new UserRepository.OnUserInsertListener() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        Log.d(TAG, "Database insertion successful!");
+
+                                                        progressBar.setVisibility(View.GONE);
+                                                        btnRegister.setEnabled(true);
+                                                        btnRegister.setText(getString(R.string.registerBtnTxt));
+
+                                                        Toast.makeText(RegisterActivity.this,
+                                                                "Registration successful!", Toast.LENGTH_SHORT).show();
+                                                        startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                                        finish();
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(String error) {
+                                                        Log.e(TAG, "Database insertion failed: " + error);
+
+                                                        progressBar.setVisibility(View.GONE);
+                                                        btnRegister.setEnabled(true);
+                                                        btnRegister.setText(getString(R.string.registerBtnTxt));
+
+                                                        Toast.makeText(RegisterActivity.this,
+                                                                "Database error: " + error, Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                    } else {
+                                        Log.e(TAG, "Firebase user is null!");
+                                        progressBar.setVisibility(View.GONE);
+                                        btnRegister.setEnabled(true);
+                                        btnRegister.setText(getString(R.string.registerBtnTxt));
+                                    }
+                                } else {
+                                    Log.e(TAG, "Firebase registration failed: " + task.getException());
+
+                                    progressBar.setVisibility(View.GONE);
+                                    btnRegister.setEnabled(true);
+                                    btnRegister.setText(getString(R.string.registerBtnTxt));
+
+                                    Toast.makeText(RegisterActivity.this, "Authentication failed: "
+                                                    + task.getException().getMessage(),
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
             }
         });
     }
+
+    private void createUserInBackend(String firebaseUid, String email, String displayName) {
+        progressBar.setVisibility(View.VISIBLE);
+        btnRegister.setEnabled(false);
+
+        User newUser = new User();
+        newUser.setFirebaseUid(firebaseUid);
+        newUser.setEmail(email);
+        newUser.setFullName(displayName);
+
+        UserRepository.insertUser(newUser, RegisterActivity.this,
+                new UserRepository.OnUserInsertListener() {
+                    @Override
+                    public void onSuccess() {
+                        progressBar.setVisibility(View.GONE);
+                        btnRegister.setEnabled(true);
+
+                        Toast.makeText(RegisterActivity.this,
+                                "Registration successful!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(RegisterActivity.this, GreetingActivity.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        progressBar.setVisibility(View.GONE);
+                        btnRegister.setEnabled(true);
+
+                        // Check if user already exists
+                        if (error.contains("409") || error.contains("already exists")) {
+                            Toast.makeText(RegisterActivity.this,
+                                    "Welcome back!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, GreetingActivity.class));
+                            finish();
+                        } else {
+                            Toast.makeText(RegisterActivity.this,
+                                    "Database error: " + error, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
 }
+

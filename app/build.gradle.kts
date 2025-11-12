@@ -50,8 +50,13 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
 
-    // PostgreSQL Driver for Neon
-    implementation("org.postgresql:postgresql:42.7.8")
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+
+    // HTTP client libraries
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     // Testing
     testImplementation(libs.junit)
