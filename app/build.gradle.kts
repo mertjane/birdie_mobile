@@ -54,6 +54,14 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
 
+    // Google Play Services Location (for "Use Location" button)
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+    // ConstraintLayout
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    // AppCompat
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
+
     // HTTP client libraries
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.code.gson:gson:2.10.1")
