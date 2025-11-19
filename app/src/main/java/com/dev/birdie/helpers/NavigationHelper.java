@@ -5,7 +5,11 @@ import android.content.Intent;
 
 import com.dev.birdie.GreetingActivity;
 import com.dev.birdie.LoginActivity;
+import com.dev.birdie.MainActivity;
 import com.dev.birdie.RegisterActivity;
+import com.dev.birdie.UserDetails1Activity;
+import com.dev.birdie.UserDetails2Activity;
+import com.dev.birdie.UserDetails3Activity;
 import com.dev.birdie.models.User;
 
 /**
@@ -45,20 +49,65 @@ public class NavigationHelper {
     }
 
     /**
-     * Navigates to Greeting/Main Activity after successful login
+     * Navigates to UserDetails2Activity
      */
-    public void navigateToMain(User user) {
-        Intent intent = new Intent(activity, GreetingActivity.class);
-        // Optional: Pass user data if needed
-        // intent.putExtra("user_id", user.getId());
-        // intent.putExtra("user_name", user.getFullName());
+    public void navigateToUserDetails2() {
+        Intent intent = new Intent(activity, UserDetails2Activity.class);
         activity.startActivity(intent);
-        activity.finish(); // Prevent going back to login
+    }
+
+    /**
+     * Navigates to UserDetails1Activity (Back from step2 to 1)
+     */
+    public void navigateTo2To1() {
+        Intent intent = new Intent(activity, UserDetails1Activity.class);
+        activity.startActivity(intent);
+    }
+
+    /**
+     * Navigates to UserDetails3Activity
+     */
+    public void navigateToUserDetails3() {
+        Intent intent = new Intent(activity, UserDetails3Activity.class);
+        activity.startActivity(intent);
+    }
+
+    /**
+     * Navigates to UserDetails2Activity (Back from step3 to 2)
+     */
+    public void navigateTo3To2() {
+        Intent intent = new Intent(activity, UserDetails2Activity.class);
+        activity.startActivity(intent);
+    }
+
+    /**
+     * Navigates to MainActivity (shows HomeFragment) after successful onboarding
+     */
+    public void navigateToMainActivity() {
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
+    /**
+     * Navigates to lastUserDetails to Home Activity after successful form filling
+     *
+     * @deprecated Use navigateToMainActivity() instead
+     */
+    @Deprecated
+    public void navigateToHome(User user) {
+        Intent intent = new Intent(activity, GreetingActivity.class);
+        activity.startActivity(intent);
+        activity.finish();
     }
 
     /**
      * Navigates to Main Activity without user data
+     *
+     * @deprecated Use navigateToMainActivity() instead
      */
+    @Deprecated
     public void navigateToMain() {
         Intent intent = new Intent(activity, GreetingActivity.class);
         activity.startActivity(intent);

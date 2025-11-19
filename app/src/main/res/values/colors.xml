@@ -30,4 +30,8 @@
 
     <!-- Transparent -->
     <color name="transparent">#00000000</color>
+
+    <color name="birdie_green">#A4D65E</color>
+    <color name="nav_icon_inactive">#757575</color>
+    
 </resources>

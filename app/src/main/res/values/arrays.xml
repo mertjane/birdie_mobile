@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string-array name="interest_array">
+        <item>🎵 Music</item>
+        <item>💪 Fitness</item>
+        <item>✈️ Travel</item>
+        <item>🍳 Cooking</item>
+        <item>🎬 Movies</item>
+        <item>🎨 Art</item>
+        <item>👗 Fashion</item>
+        <item>🎮 Gaming</item>
+    </string-array>
+</resources>

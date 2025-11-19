@@ -1,16 +1,7 @@
 package com.dev.birdie;
 
-import android.Manifest;
-import android.app.DatePickerDialog;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -18,25 +9,27 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.dev.birdie.adapters.HoroscopeSpinnerAdapter;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
+import com.dev.birdie.helpers.HoroscopeHelper;
+import com.dev.birdie.helpers.NavigationHelper;
+import com.dev.birdie.helpers.ValidationHelper;
+import com.dev.birdie.managers.DatePickerManager;
+import com.dev.birdie.managers.LocationManager;
+import com.dev.birdie.models.User;
+import com.dev.birdie.repositories.UserRepository;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-
+/**
+ * Refactored UserDetails1Activity with separated concerns
+ */
 public class UserDetails1Activity extends AppCompatActivity {
 
     private static final String TAG = "UserDetails1Activity";
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
 
-    // Views
+    // UI Components
     private EditText etDateOfBirth;
     private Spinner spinnerHoroscope;
     private RadioGroup radioGroupGender;
@@ -44,34 +37,34 @@ public class UserDetails1Activity extends AppCompatActivity {
     private MaterialButton btnUseLocation;
     private MaterialButton btnNext;
 
-    // Location
-    private FusedLocationProviderClient fusedLocationClient;
+    // Managers
+    private LocationManager locationManager;
+    private NavigationHelper navigationHelper;
+    private DatePickerManager datePickerManager;
 
-    // Date variables
-    private Calendar selectedDate;
+    // Store location data
+    private Double currentLatitude;
+    private Double currentLongitude;
+
+    // Store birth date components for age calculation
+    private int selectedYear;
+    private int selectedMonth;
+    private int selectedDay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details1);
 
-        // Initialize views
         initializeViews();
-
-        // Setup horoscope spinner
+        initializeManagers();
         setupHoroscopeSpinner();
-
-        // Setup date picker
-        setupDatePicker();
-
-        // Setup location
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        btnUseLocation.setOnClickListener(v -> requestLocationPermissionAndGetLocation());
-
-        // Setup next button
-        btnNext.setOnClickListener(v -> validateAndProceed());
+        setupClickListeners();
     }
 
+    /**
+     * Initialize all view references
+     */
     private void initializeViews() {
         etDateOfBirth = findViewById(R.id.etDateOfBirth);
         spinnerHoroscope = findViewById(R.id.spinnerHoroscope);
@@ -81,11 +74,21 @@ public class UserDetails1Activity extends AppCompatActivity {
         btnNext = findViewById(R.id.btnNext);
     }
 
+    /**
+     * Initialize managers
+     */
+    private void initializeManagers() {
+        locationManager = new LocationManager(this);
+        datePickerManager = new DatePickerManager(this);
+        navigationHelper = new NavigationHelper(this);
+    }
+
+    /**
+     * Setup horoscope spinner with custom adapter
+     */
     private void setupHoroscopeSpinner() {
-        // Get horoscope array from resources
         CharSequence[] horoscopeArray = getResources().getTextArray(R.array.horoscope_array);
 
-        // Create custom adapter with placeholder handling
         HoroscopeSpinnerAdapter adapter = new HoroscopeSpinnerAdapter(
                 this,
                 R.layout.spinner_item,
@@ -94,230 +97,252 @@ public class UserDetails1Activity extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinnerHoroscope.setAdapter(adapter);
 
-        // IMPORTANT: Set selection AFTER setting adapter
         spinnerHoroscope.setSelection(0, false);
-
-        // Force refresh to show placeholder
         spinnerHoroscope.post(() -> spinnerHoroscope.setSelection(0));
     }
 
-    private void setupDatePicker() {
-        selectedDate = Calendar.getInstance();
+    /**
+     * Setup all click listeners
+     */
+    private void setupClickListeners() {
+        // Date picker
+        etDateOfBirth.setOnClickListener(v -> showDatePicker());
 
-        etDateOfBirth.setOnClickListener(v -> {
-            int year = selectedDate.get(Calendar.YEAR);
-            int month = selectedDate.get(Calendar.MONTH);
-            int day = selectedDate.get(Calendar.DAY_OF_MONTH);
+        // Location button
+        btnUseLocation.setOnClickListener(v -> handleLocationRequest());
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    UserDetails1Activity.this,
-                    (view, selectedYear, selectedMonth, selectedDay) -> {
-                        selectedDate.set(selectedYear, selectedMonth, selectedDay);
-                        updateDateOfBirthField(selectedYear, selectedMonth, selectedDay);
-                        updateHoroscopeBasedOnDate(selectedMonth, selectedDay);
-                    },
-                    year, month, day
-            );
+        // Next button
+        btnNext.setOnClickListener(v -> handleNextButton());
+    }
 
-            // Set max date to today (user must be born in the past)
-            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+    /**
+     * Shows date picker dialog
+     */
+    private void showDatePicker() {
+        datePickerManager.showDatePicker((formattedDate, year, month, day) -> {
+            etDateOfBirth.setText(formattedDate);
+            HoroscopeHelper.setHoroscopeInSpinner(spinnerHoroscope, month, day);
 
-            // Optional: Set min date (e.g., 100 years ago)
-            Calendar minDate = Calendar.getInstance();
-            minDate.add(Calendar.YEAR, -100);
-            datePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
-
-            datePickerDialog.show();
+            // Store birth date components for age calculation
+            selectedYear = year;
+            selectedMonth = month;
+            selectedDay = day;
         });
     }
 
-    private void updateDateOfBirthField(int year, int month, int day) {
-        String formattedDate = String.format(Locale.getDefault(), "%02d/%02d/%d", day, month + 1, year);
-        etDateOfBirth.setText(formattedDate);
-    }
+    /**
+     * Handles location button click
+     */
+    private void handleLocationRequest() {
+        if (!locationManager.hasLocationPermission()) {
+            locationManager.requestLocationPermission();
+            return;
+        }
 
-    private void updateHoroscopeBasedOnDate(int month, int day) {
-        String horoscope = getHoroscopeSign(month, day);
+        // Show loading state
+        btnUseLocation.setEnabled(false);
+        btnUseLocation.setText("Getting location...");
 
-        // Find and select the horoscope in spinner (skip index 0 which is placeholder)
-        HoroscopeSpinnerAdapter adapter = (HoroscopeSpinnerAdapter) spinnerHoroscope.getAdapter();
-        for (int i = 1; i < adapter.getCount(); i++) {  // Start from 1 to skip placeholder
-            String item = adapter.getItem(i).toString();
-            if (item.toLowerCase().contains(horoscope.toLowerCase())) {
-                spinnerHoroscope.setSelection(i);
-                break;
+        locationManager.getCurrentLocationPostcode(new LocationManager.LocationCallback() {
+            @Override
+            public void onLocationReceived(String postcode, double latitude, double longitude) {
+                resetLocationButton();
+                etPostcode.setText(postcode);
+
+                // Store coordinates
+                currentLatitude = latitude;
+                currentLongitude = longitude;
+
+                // Log coordinates
+                Log.d(TAG, "Location coordinates - Latitude: " + latitude + ", Longitude: " + longitude);
+                Log.d(TAG, "Postcode: " + postcode);
+
+                Toast.makeText(UserDetails1Activity.this,
+                        "Location found!", Toast.LENGTH_SHORT).show();
             }
-        }
+
+            @Override
+            public void onLocationError(String error) {
+                resetLocationButton();
+                Log.e(TAG, "Location error: " + error);
+                Toast.makeText(UserDetails1Activity.this, error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPermissionDenied() {
+                resetLocationButton();
+                Toast.makeText(UserDetails1Activity.this,
+                        "Location permission required", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private String getHoroscopeSign(int month, int day) {
-        // Month is 0-indexed (0 = January)
-        if ((month == 0 && day >= 20) || (month == 1 && day <= 18)) return "Aquarius";
-        if ((month == 1 && day >= 19) || (month == 2 && day <= 20)) return "Pisces";
-        if ((month == 2 && day >= 21) || (month == 3 && day <= 19)) return "Aries";
-        if ((month == 3 && day >= 20) || (month == 4 && day <= 20)) return "Taurus";
-        if ((month == 4 && day >= 21) || (month == 5 && day <= 20)) return "Gemini";
-        if ((month == 5 && day >= 21) || (month == 6 && day <= 22)) return "Cancer";
-        if ((month == 6 && day >= 23) || (month == 7 && day <= 22)) return "Leo";
-        if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) return "Virgo";
-        if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) return "Libra";
-        if ((month == 9 && day >= 23) || (month == 10 && day <= 21)) return "Scorpio";
-        if ((month == 10 && day >= 22) || (month == 11 && day <= 21)) return "Sagittarius";
-        return "Capricorn"; // Dec 22 - Jan 19
+    /**
+     * Resets location button to default state
+     */
+    private void resetLocationButton() {
+        btnUseLocation.setEnabled(true);
+        btnUseLocation.setText("Use location");
     }
 
-    private void requestLocationPermissionAndGetLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE
-            );
-        } else {
-            getCurrentLocation();
-        }
-    }
-
+    /**
+     * Handles permission request result
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getCurrentLocation();
+        if (requestCode == LocationManager.LOCATION_PERMISSION_REQUEST_CODE) {
+            if (locationManager.hasLocationPermission()) {
+                handleLocationRequest();
             } else {
                 Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+    /**
+     * Handles next button click
+     */
+    private void handleNextButton() {
+        String dateOfBirth = etDateOfBirth.getText().toString().trim();
+        int horoscopePosition = spinnerHoroscope.getSelectedItemPosition();
+        int genderId = radioGroupGender.getCheckedRadioButtonId();
+        String postcode = etPostcode.getText().toString().trim();
+
+        // Validate all fields
+        String validationError = ValidationHelper.validateUserDetails(
+                dateOfBirth, horoscopePosition, genderId, postcode);
+
+        if (validationError != null) {
+            Toast.makeText(this, validationError, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        btnUseLocation.setEnabled(false);
-        btnUseLocation.setText("Getting location...");
+        // All validations passed - save to database
+        saveUserDetails(dateOfBirth, horoscopePosition, genderId, postcode);
+    }
 
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, location -> {
-                    btnUseLocation.setEnabled(true);
-                    btnUseLocation.setText("Use location");
+    /**
+     * Saves user details to database
+     */
+    private void saveUserDetails(String dateOfBirth, int horoscopePosition,
+                                 int genderId, String postcode) {
+        // Get current user's Firebase UID
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-                    if (location != null) {
-                        getPostcodeFromLocation(location);
-                    } else {
-                        Toast.makeText(this, "Unable to get location. Please try again.",
+        String firebaseUid = firebaseUser.getUid();
+
+        // Calculate age
+        int age = DatePickerManager.calculateAge(selectedYear, selectedMonth, selectedDay);
+
+        // Create User object with collected data
+        User user = new User();
+        user.setDateOfBirth(dateOfBirth);
+        user.setAge(age);
+        user.setHoroscope(spinnerHoroscope.getSelectedItem().toString());
+        user.setGender(getGenderString(genderId));
+        user.setLocationPostcode(postcode);
+        user.setLatitude(currentLatitude);
+        user.setLongitude(currentLongitude);
+        user.setOnboardingStep(1);
+
+        // Log all data
+        Log.d(TAG, "========== USER DETAILS ==========");
+        Log.d(TAG, "Firebase UID: " + firebaseUid);
+        Log.d(TAG, "Date of Birth: " + user.getDateOfBirth());
+        Log.d(TAG, "Age: " + user.getAge());
+        Log.d(TAG, "Horoscope: " + user.getHoroscope());
+        Log.d(TAG, "Gender: " + user.getGender());
+        Log.d(TAG, "Postcode: " + user.getLocationPostcode());
+        Log.d(TAG, "Latitude: " + user.getLatitude());
+        Log.d(TAG, "Longitude: " + user.getLongitude());
+        Log.d(TAG, "Onboarding Step: " + user.getOnboardingStep());
+        Log.d(TAG, "==================================");
+
+        // Show loading
+        btnNext.setEnabled(false);
+        btnNext.setText("Saving...");
+
+        // Update user in database
+        UserRepository.updateUserDetails(firebaseUid, user, this,
+                new UserRepository.OnUserUpdateListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "User details saved successfully to database!");
+
+                        // Reset button
+                        btnNext.setEnabled(true);
+                        btnNext.setText("Next");
+
+                        Toast.makeText(UserDetails1Activity.this,
+                                "Details saved successfully!",
                                 Toast.LENGTH_SHORT).show();
+
+                        // Navigate to UserDetails2Activity
+                        navigationHelper.navigateToUserDetails2();
                     }
-                })
-                .addOnFailureListener(e -> {
-                    btnUseLocation.setEnabled(true);
-                    btnUseLocation.setText("Use location");
-                    Log.e(TAG, "Error getting location", e);
-                    Toast.makeText(this, "Error getting location", Toast.LENGTH_SHORT).show();
+
+                    @Override
+                    public void onFailure(String error) {
+                        Log.e(TAG, "Failed to save user details: " + error);
+
+                        // Reset button
+                        btnNext.setEnabled(true);
+                        btnNext.setText("Next");
+
+                        Toast.makeText(UserDetails1Activity.this,
+                                "Failed to save: " + error,
+                                Toast.LENGTH_LONG).show();
+                    }
                 });
     }
 
-    private void getPostcodeFromLocation(Location location) {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+    /**
+     * Proceeds to next screen with collected data
 
-        try {
-            List<Address> addresses = geocoder.getFromLocation(
-                    location.getLatitude(),
-                    location.getLongitude(),
-                    1
-            );
+     private void proceedToNextScreen(String dateOfBirth, int horoscopePosition,
+     int genderId, String postcode) {
+     // Create User object with collected data
+     User user = new User();
+     user.setDateOfBirth(dateOfBirth);
+     user.setHoroscope(spinnerHoroscope.getSelectedItem().toString());
+     user.setGender(getGenderString(genderId));
+     user.setLocationPostcode(postcode);
 
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                String postcode = address.getPostalCode();
+     Log.d(TAG, "User Details - DOB: " + user.getDateOfBirth() +
+     ", Horoscope: " + user.getHoroscope() +
+     ", Gender: " + user.getGender() +
+     ", Postcode: " + user.getLocationPostcode());
 
-                if (postcode != null && !postcode.isEmpty()) {
-                    etPostcode.setText(postcode);
-                    Toast.makeText(this, "Location found!", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Try to get area/locality instead
-                    String locality = address.getLocality();
-                    if (locality != null) {
-                        etPostcode.setText(locality);
-                    } else {
-                        Toast.makeText(this, "Postcode not available for this location",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } else {
-                Toast.makeText(this, "Unable to determine postcode", Toast.LENGTH_SHORT).show();
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Geocoder error", e);
-            Toast.makeText(this, "Error retrieving postcode", Toast.LENGTH_SHORT).show();
+     Toast.makeText(this, "Proceeding to next screen...", Toast.LENGTH_SHORT).show();
+
+     // TODO: Navigate to UserDetails2Activity
+     // Intent intent = new Intent(this, UserDetails2Activity.class);
+     // intent.putExtra("date_of_birth", user.getDateOfBirth());
+     // intent.putExtra("horoscope", user.getHoroscope());
+     // intent.putExtra("gender", user.getGender());
+     // intent.putExtra("postcode", user.getLocationPostcode());
+     // startActivity(intent);
+     }
+     */
+
+    /**
+     * Converts gender radio button ID to string
+     */
+    private String getGenderString(int genderId) {
+        if (genderId == R.id.radioMale) {
+            return "Male";
+        } else if (genderId == R.id.radioFemale) {
+            return "Female";
+        } else if (genderId == R.id.radioOther) {
+            return "Other";
         }
-    }
-
-    private void validateAndProceed() {
-        // Validate date of birth
-        if (etDateOfBirth.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Please select your date of birth", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Validate horoscope
-        if (spinnerHoroscope.getSelectedItemPosition() == 0) {
-            Toast.makeText(this, "Please select your horoscope", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Validate gender
-        if (radioGroupGender.getCheckedRadioButtonId() == -1) {
-            Toast.makeText(this, "Please select your gender", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Validate postcode
-        if (etPostcode.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Please enter your postcode", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // All validations passed - proceed to next screen
-        proceedToNextScreen();
-    }
-
-    private void proceedToNextScreen() {
-        // Get all the data
-        String dateOfBirth = etDateOfBirth.getText().toString();
-        String horoscope = spinnerHoroscope.getSelectedItem().toString();
-
-        int selectedGenderId = radioGroupGender.getCheckedRadioButtonId();
-        String gender = "";
-        if (selectedGenderId == R.id.radioMale) {
-            gender = "Male";
-        } else if (selectedGenderId == R.id.radioFemale) {
-            gender = "Female";
-        } else if (selectedGenderId == R.id.radioOther) {
-            gender = "Other";
-        }
-
-        String postcode = etPostcode.getText().toString();
-
-        Log.d(TAG, "Date of Birth: " + dateOfBirth);
-        Log.d(TAG, "Horoscope: " + horoscope);
-        Log.d(TAG, "Gender: " + gender);
-        Log.d(TAG, "Postcode: " + postcode);
-
-        // TODO: Save data and navigate to UserDetails2Activity
-        Toast.makeText(this, "Proceeding to next screen...", Toast.LENGTH_SHORT).show();
-
-        // Intent intent = new Intent(this, UserDetails2Activity.class);
-        // intent.putExtra("date_of_birth", dateOfBirth);
-        // intent.putExtra("horoscope", horoscope);
-        // intent.putExtra("gender", gender);
-        // intent.putExtra("postcode", postcode);
-        // startActivity(intent);
+        return "";
     }
 }
-

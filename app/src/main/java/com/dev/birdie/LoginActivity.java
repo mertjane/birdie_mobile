@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.dev.birdie.callbacks.AuthenticationCallback;
 import com.dev.birdie.helpers.NavigationHelper;
+
 import com.dev.birdie.helpers.ValidationHelper;
 import com.dev.birdie.managers.AuthenticationManager;
 import com.dev.birdie.managers.UIStateManager;
@@ -140,7 +141,8 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this,
                         "Welcome back, " + user.getFullName() + "!",
                         Toast.LENGTH_SHORT).show();
-                navigationHelper.navigateToMain(user);
+
+                navigationHelper.navigateToMain();
             }
 
             @Override
@@ -187,7 +189,8 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this,
                             "Welcome back, " + user.getFullName() + "!",
                             Toast.LENGTH_SHORT).show();
-                    navigationHelper.navigateToMain(user);
+
+                    navigationHelper.navigateToMain();
                 }
 
                 @Override

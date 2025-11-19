@@ -67,6 +67,32 @@ public class ValidationHelper {
     }
 
     /**
+     * Validates user details form (date of birth, horoscope, gender, postcode)
+     *
+     * @return Error message if validation fails, null if validation passes
+     */
+    public static String validateUserDetails(String dateOfBirth, int horoscopePosition,
+                                             int genderId, String postcode) {
+        if (TextUtils.isEmpty(dateOfBirth)) {
+            return "Please select your date of birth";
+        }
+
+        if (horoscopePosition == 0) { // 0 is placeholder
+            return "Please select your horoscope";
+        }
+
+        if (genderId == -1) { // -1 means no selection
+            return "Please select your gender";
+        }
+
+        if (TextUtils.isEmpty(postcode)) {
+            return "Please enter your postcode";
+        }
+
+        return null; // Validation passed
+    }
+
+    /**
      * Validates if email format is correct
      */
     public static boolean isValidEmail(String email) {
@@ -81,5 +107,12 @@ public class ValidationHelper {
      */
     public static boolean isValidPassword(String password) {
         return !TextUtils.isEmpty(password) && password.length() >= 6;
+    }
+
+    /**
+     * Validates postcode format (basic validation)
+     */
+    public static boolean isValidPostcode(String postcode) {
+        return !TextUtils.isEmpty(postcode) && postcode.trim().length() >= 3;
     }
 }

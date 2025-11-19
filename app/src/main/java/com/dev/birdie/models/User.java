@@ -42,6 +42,9 @@ public class User {
     @SerializedName("is_active")
     private Boolean isActive;
 
+    @SerializedName("onboarding_step")
+    private Integer onboardingStep;
+
     @SerializedName("created_at")
     private String createdAt;
 
@@ -116,6 +119,10 @@ public class User {
         return isActive;
     }
 
+    public Integer getOnboardingStep() {
+        return onboardingStep;
+    }
+
     public String getCreatedAt() {
         return createdAt;
     }
@@ -187,6 +194,10 @@ public class User {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public void setOnboardingStep(Integer onboardingStep) {
+        this.onboardingStep = onboardingStep;
     }
 
     public void setCreatedAt(String createdAt) {

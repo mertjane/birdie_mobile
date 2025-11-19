@@ -2,155 +2,222 @@ package com.dev.birdie.repositories;
 
 import android.app.Activity;
 import android.util.Log;
-import com.dev.birdie.models.User;
-import com.dev.birdie.network.ApiClient;
-import com.dev.birdie.network.ApiConfig;
-import com.google.gson.JsonObject;
-import okhttp3.*;
-import java.io.IOException;
 
+import com.dev.birdie.models.ApiResponse;
+import com.dev.birdie.models.User;
+import com.dev.birdie.network.RetrofitClient;
+import com.dev.birdie.services.UserServices;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserRepository {
 
     private static final String TAG = "UserRepository";
+    private static UserServices userServices;
 
+    // Initialize UserServices
+    private static UserServices getUserServices() {
+        if (userServices == null) {
+            userServices = RetrofitClient.getInstance().createService(UserServices.class);
+        }
+        return userServices;
+    }
+
+    /**
+     * Insert/Create a new user
+     */
     public static void insertUser(User user, Activity activity, OnUserInsertListener listener) {
         Log.d(TAG, "insertUser() called for user: " + user.getEmail());
 
-        new Thread(() -> {
-            boolean success = false;
-            String errorMessage = null;
+        Call<ApiResponse<User>> call = getUserServices().createUser(user);
 
-            try {
-                // Create JSON request body
-                JsonObject jsonBody = new JsonObject();
-                jsonBody.addProperty("firebase_uid", user.getFirebaseUid());
-                jsonBody.addProperty("email", user.getEmail());
-                jsonBody.addProperty("full_name", user.getFullName());
+        call.enqueue(new Callback<ApiResponse<User>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
+                activity.runOnUiThread(() -> {
+                    if (response.isSuccessful() && response.body() != null) {
+                        ApiResponse<User> apiResponse = response.body();
 
-                // Add optional fields if present
-                if (user.getDateOfBirth() != null) {
-                    jsonBody.addProperty("date_of_birth", user.getDateOfBirth());
-                }
-                if (user.getAge() != null) {
-                    jsonBody.addProperty("age", user.getAge());
-                }
-                if (user.getGender() != null) {
-                    jsonBody.addProperty("gender", user.getGender());
-                }
-
-                RequestBody body = ApiClient.createJsonRequestBody(jsonBody);
-
-                // Build request
-                String url = ApiConfig.BASE_URL + ApiConfig.USERS_ENDPOINT;
-                Log.d(TAG, "POST URL: " + url);
-
-                Request request = new Request.Builder()
-                        .url(url)
-                        .post(body)
-                        .build();
-
-                // Execute request
-                Log.d(TAG, "Executing API request...");
-                Response response = ApiClient.getClient().newCall(request).execute();
-
-                String responseBody = response.body().string();
-                Log.d(TAG, "Response code: " + response.code());
-                Log.d(TAG, "Response body: " + responseBody);
-
-                if (response.isSuccessful()) {
-                    success = true;
-                    Log.d(TAG, "User created successfully");
-                } else {
-                    errorMessage = "Server error: " + response.code() + " - " + responseBody;
-                    Log.e(TAG, errorMessage);
-                }
-
-                response.close();
-
-            } catch (IOException e) {
-                Log.e(TAG, "Network error", e);
-                errorMessage = "Network error: " + e.getMessage();
-            } catch (Exception e) {
-                Log.e(TAG, "Unexpected error", e);
-                errorMessage = "Error: " + e.getMessage();
+                        if (apiResponse.isSuccess()) {
+                            Log.d(TAG, "User created successfully");
+                            listener.onSuccess();
+                        } else {
+                            String error = apiResponse.getError() != null ?
+                                    apiResponse.getError() : "Unknown error";
+                            Log.e(TAG, "API error: " + error);
+                            listener.onFailure(error);
+                        }
+                    } else {
+                        String error = "Server error: " + response.code();
+                        Log.e(TAG, error);
+                        listener.onFailure(error);
+                    }
+                });
             }
 
-            final boolean finalSuccess = success;
-            final String finalError = errorMessage;
-
-            // Return to UI thread
-            activity.runOnUiThread(() -> {
-                if (finalSuccess) {
-                    listener.onSuccess();
-                } else {
-                    listener.onFailure(finalError != null ? finalError : "Unknown error");
-                }
-            });
-        }).start();
+            @Override
+            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                Log.e(TAG, "Network error", t);
+                activity.runOnUiThread(() -> {
+                    listener.onFailure("Network error: " + t.getMessage());
+                });
+            }
+        });
     }
 
+    /**
+     * Get user by Firebase UID
+     */
     public static void getUserByFirebaseUid(String firebaseUid, Activity activity, OnUserFetchListener listener) {
         Log.d(TAG, "getUserByFirebaseUid() called for: " + firebaseUid);
 
-        new Thread(() -> {
-            User user = null;
-            String errorMessage = null;
+        Call<ApiResponse<User>> call = getUserServices().getUserByFirebaseUid(firebaseUid);
 
-            try {
-                String url = ApiConfig.BASE_URL + ApiConfig.USERS_ENDPOINT + "/" + firebaseUid;
-                Log.d(TAG, "GET URL: " + url);
+        call.enqueue(new Callback<ApiResponse<User>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
+                activity.runOnUiThread(() -> {
+                    if (response.isSuccessful() && response.body() != null) {
+                        ApiResponse<User> apiResponse = response.body();
 
-                Request request = new Request.Builder()
-                        .url(url)
-                        .get()
-                        .build();
-
-                Response response = ApiClient.getClient().newCall(request).execute();
-                String responseBody = response.body().string();
-
-                Log.d(TAG, "Response code: " + response.code());
-                Log.d(TAG, "Response body: " + responseBody);
-
-                if (response.isSuccessful()) {
-                    JsonObject jsonResponse = ApiClient.getGson().fromJson(responseBody, JsonObject.class);
-                    JsonObject userData = jsonResponse.getAsJsonObject("data");
-                    user = ApiClient.getGson().fromJson(userData, User.class);
-                    Log.d(TAG, "User fetched successfully");
-                } else if (response.code() == 404) {
-                    errorMessage = "User not found";
-                } else {
-                    errorMessage = "Server error: " + response.code();
-                }
-
-                response.close();
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error fetching user", e);
-                errorMessage = "Error: " + e.getMessage();
+                        if (apiResponse.isSuccess() && apiResponse.getData() != null) {
+                            Log.d(TAG, "User fetched successfully");
+                            listener.onSuccess(apiResponse.getData());
+                        } else {
+                            String error = apiResponse.getError() != null ?
+                                    apiResponse.getError() : "User not found";
+                            Log.e(TAG, error);
+                            listener.onFailure(error);
+                        }
+                    } else if (response.code() == 404) {
+                        Log.e(TAG, "User not found");
+                        listener.onFailure("User not found");
+                    } else {
+                        String error = "Server error: " + response.code();
+                        Log.e(TAG, error);
+                        listener.onFailure(error);
+                    }
+                });
             }
 
-            final User finalUser = user;
-            final String finalError = errorMessage;
+            @Override
+            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                Log.e(TAG, "Network error", t);
+                activity.runOnUiThread(() -> {
+                    listener.onFailure("Network error: " + t.getMessage());
+                });
+            }
+        });
+    }
 
-            activity.runOnUiThread(() -> {
-                if (finalUser != null) {
-                    listener.onSuccess(finalUser);
-                } else {
-                    listener.onFailure(finalError);
-                }
-            });
-        }).start();
+    /**
+     * Update user details
+     */
+    public static void updateUserDetails(String firebaseUid, User user, Activity activity, OnUserUpdateListener listener) {
+        Log.d(TAG, "updateUserDetails() called for firebase_uid: " + firebaseUid);
+
+        Call<ApiResponse<User>> call = getUserServices().updateUser(firebaseUid, user);
+
+        call.enqueue(new Callback<ApiResponse<User>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
+                activity.runOnUiThread(() -> {
+                    if (response.isSuccessful() && response.body() != null) {
+                        ApiResponse<User> apiResponse = response.body();
+
+                        if (apiResponse.isSuccess()) {
+                            Log.d(TAG, "User updated successfully");
+                            listener.onSuccess();
+                        } else {
+                            String error = apiResponse.getError() != null ?
+                                    apiResponse.getError() : "Unknown error";
+                            Log.e(TAG, "API error: " + error);
+                            listener.onFailure(error);
+                        }
+                    } else {
+                        String error = "Server error: " + response.code();
+                        Log.e(TAG, error);
+                        listener.onFailure(error);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
+                Log.e(TAG, "Network error", t);
+                activity.runOnUiThread(() -> {
+                    listener.onFailure("Network error: " + t.getMessage());
+                });
+            }
+        });
+    }
+
+    /**
+     * Delete user (soft delete)
+     */
+    public static void deleteUser(String firebaseUid, Activity activity, OnUserDeleteListener listener) {
+        Log.d(TAG, "deleteUser() called for firebase_uid: " + firebaseUid);
+
+        Call<ApiResponse<Void>> call = getUserServices().deleteUser(firebaseUid);
+
+        call.enqueue(new Callback<ApiResponse<Void>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Void>> call, Response<ApiResponse<Void>> response) {
+                activity.runOnUiThread(() -> {
+                    if (response.isSuccessful() && response.body() != null) {
+                        ApiResponse<Void> apiResponse = response.body();
+
+                        if (apiResponse.isSuccess()) {
+                            Log.d(TAG, "User deleted successfully");
+                            listener.onSuccess();
+                        } else {
+                            String error = apiResponse.getError() != null ?
+                                    apiResponse.getError() : "Unknown error";
+                            Log.e(TAG, "API error: " + error);
+                            listener.onFailure(error);
+                        }
+                    } else {
+                        String error = "Server error: " + response.code();
+                        Log.e(TAG, error);
+                        listener.onFailure(error);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Void>> call, Throwable t) {
+                Log.e(TAG, "Network error", t);
+                activity.runOnUiThread(() -> {
+                    listener.onFailure("Network error: " + t.getMessage());
+                });
+            }
+        });
     }
 
     // Callback interfaces
     public interface OnUserInsertListener {
         void onSuccess();
+
         void onFailure(String error);
     }
 
     public interface OnUserFetchListener {
         void onSuccess(User user);
+
+        void onFailure(String error);
+    }
+
+    public interface OnUserUpdateListener {
+        void onSuccess();
+
+        void onFailure(String error);
+    }
+
+    public interface OnUserDeleteListener {
+        void onSuccess();
+
         void onFailure(String error);
     }
 }
