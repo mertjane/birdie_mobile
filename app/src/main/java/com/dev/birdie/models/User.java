@@ -2,6 +2,8 @@ package com.dev.birdie.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class User {
     @SerializedName("user_id")
     private Integer userId;
@@ -50,6 +52,12 @@ public class User {
 
     @SerializedName("updated_at")
     private String updatedAt;
+
+    @SerializedName("photo_url")
+    private String photoUrl;
+
+    @SerializedName("interests")
+    private List<String> interests;
 
     public User() {
     }
@@ -131,6 +139,14 @@ public class User {
         return updatedAt;
     }
 
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
     // Setters
     public void setUserId(Integer userId) {
         this.userId = userId;
@@ -206,5 +222,13 @@ public class User {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<String> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<String> interests) {
+        this.interests = interests;
     }
 }
