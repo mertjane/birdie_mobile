@@ -206,7 +206,7 @@
                 android:drawablePadding="12dp"
                 android:fontFamily="@font/poppins"
                 android:padding="14dp"
-                android:text="@string/cooking"
+                android:text="@string/femaleGender"
                 android:textColor="#222222"
                 android:textSize="14sp"
                 android:textStyle="bold" />

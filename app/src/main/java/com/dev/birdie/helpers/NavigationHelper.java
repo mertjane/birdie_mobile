@@ -81,7 +81,8 @@ public class NavigationHelper {
     }
 
     /**
-     * Navigates to MainActivity (shows HomeFragment) after successful onboarding
+     * Navigates to MainActivity (shows HomeFragment by default) after successful onboarding
+     * Clears the back stack to prevent returning to onboarding screens
      */
     public void navigateToMainActivity() {
         Intent intent = new Intent(activity, MainActivity.class);
@@ -91,16 +92,17 @@ public class NavigationHelper {
     }
 
     /**
-     * Navigates to lastUserDetails to Home Activity after successful form filling
-     *
-     * @deprecated Use navigateToMainActivity() instead
+     * Navigates to MainActivity with HomeFragment explicitly
+     * Same as navigateToMainActivity() but with clear intent
      */
-    @Deprecated
-    public void navigateToHome(User user) {
-        Intent intent = new Intent(activity, GreetingActivity.class);
+    public void navigateToHome() {
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        // MainActivity should default to HomeFragment
         activity.startActivity(intent);
         activity.finish();
     }
+
 
     /**
      * Navigates to Main Activity without user data
@@ -113,6 +115,10 @@ public class NavigationHelper {
         activity.startActivity(intent);
         activity.finish();
     }
+
+    /**
+     *
+     */
 
     /**
      * Generic navigation helper

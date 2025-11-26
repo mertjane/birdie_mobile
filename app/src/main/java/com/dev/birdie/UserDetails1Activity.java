@@ -22,6 +22,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Locale;
+
 /**
  * Refactored UserDetails1Activity with separated concerns
  */
@@ -241,9 +243,17 @@ public class UserDetails1Activity extends AppCompatActivity {
         // Calculate age
         int age = DatePickerManager.calculateAge(selectedYear, selectedMonth, selectedDay);
 
+        // 1. Format the date to ISO 8601 (YYYY-MM-DD) for the Database
+        // Note: selectedMonth is 0-indexed, so we add 1
+        String apiDateOfBirth = String.format(Locale.US, "%d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+
         // Create User object with collected data
         User user = new User();
-        user.setDateOfBirth(dateOfBirth);
+
+        // 2. Use the ISO formatted date for the API payload
+        user.setDateOfBirth(apiDateOfBirth);
+
+        // Create User object with collected data
         user.setAge(age);
         user.setHoroscope(spinnerHoroscope.getSelectedItem().toString());
         user.setGender(getGenderString(genderId));

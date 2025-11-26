@@ -98,4 +98,21 @@
     <string name="messages">Messages</string>
     <string name="settings">Settings</string>
     <string name="home_fragment">Home Fragment</string>
+    <string name="header_title_profile">Profile</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="account_settings">Account Settings</string>
+    <string name="privacy_and_security_settings">Privacy and security settings</string>
+    <string name="upload_a_new_profile_picture">Upload a new profile picture</string>
+    <string name="change_avatar">Change Avatar</string>
+    <string name="change_your_display_name">Change your display name</string>
+    <string name="edit_name">Edit Name</string>
+    <string name="john_doe_example_com">john.doe@example.com</string>
+    <string name="john_doe">John Doe</string>
+    <string name="change_profile_photo">Change Profile Photo</string>
+    <string name="jd">JD</string>
+    <string name="change_your_profile_picture">Change your Profile Picture</string>
+    <string name="sign_out_of_your_account">Sign out of your account</string>
+    <string name="deactivate_account">Deactivate Account</string>
+    <string name="temporarily_disable_your_account">Temporarily disable your account</string>
+    <string name="femaleGender">Female</string>
 </resources>

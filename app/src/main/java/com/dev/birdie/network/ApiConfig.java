@@ -14,6 +14,7 @@ public class ApiConfig {
     public static final String USERS_ENDPOINT = "api/users";
     public static final String USER_INTERESTS_ENDPOINT = "api/user-interests";
     public static final String PHOTOS_ENDPOINT = "api/photos";
+    public static final String FEEDS_ENDPOINT = "api/home";
 
     public static final int CONNECT_TIMEOUT = 30; // seconds
     public static final int READ_TIMEOUT = 30; // seconds

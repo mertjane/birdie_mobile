@@ -1,64 +1,178 @@
 package com.dev.birdie;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.dev.birdie.helpers.NavigationHelper;
+import com.dev.birdie.helpers.PhotoDisplayHelper;
+import com.dev.birdie.models.Photo;
+import com.dev.birdie.models.User;
+import com.dev.birdie.repositories.PhotoRepository;
+import com.dev.birdie.repositories.UserRepository;
+import com.google.firebase.auth.FirebaseAuth; // Import Firebase Auth
+
 public class ProfileFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    // UI Components
+    private TextView txtName;
+    private TextView txtEmail;
+    private TextView txtInitials;
+    private ImageView imgProfile;
+    private LinearLayout btnSignOut;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private PhotoDisplayHelper photoHelper;
+    private NavigationHelper navigationHelper;
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        photoHelper = new PhotoDisplayHelper(getContext());
+        navigationHelper = new NavigationHelper(getActivity());
+
+        initViews(view);
+        setupClickListeners();
+
+        // Start the data fetching process
+        fetchCurrentUser();
+    }
+
+    private void initViews(View view) {
+        txtName = view.findViewById(R.id.userName);
+        txtEmail = view.findViewById(R.id.userEmail);
+        txtInitials = view.findViewById(R.id.profileInitials);
+        imgProfile = view.findViewById(R.id.profileImage);
+
+        // Bind the Sign Out button from XML
+        btnSignOut = view.findViewById(R.id.optSignOut);
+    }
+
+    private void setupClickListeners() {
+        // Sign Out Logic
+        btnSignOut.setOnClickListener(v -> {
+            // 1. Sign out from Firebase
+            FirebaseAuth.getInstance().signOut();
+
+            // 2. Clear any other session data if you have it (e.g. SharedPrefs)
+            // Example: SharedPrefManager.getInstance(getContext()).clear();
+
+            Toast.makeText(getContext(), "Signed out successfully", Toast.LENGTH_SHORT).show();
+
+            // 3. Navigate to Login and kill current activity
+            navigationHelper.navigateToLoginAndFinish();
+        });
+
+        // You can add listeners for other buttons here later:
+        // view.findViewById(R.id.optEditName).setOnClickListener(...);
+    }
+
+    private void fetchCurrentUser() {
+        // 1. Get the Firebase UID of the logged-in user
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // 2. Call UserRepository to get User details
+        UserRepository.getUserByFirebaseUid(currentUid, getActivity(), new UserRepository.OnUserFetchListener() {
+            @Override
+            public void onSuccess(User user) {
+                // User data fetched successfully
+                updateUserUI(user);
+
+                // 3. Now that we have the User ID, fetch the Primary Photo
+                if (user.getUserId() != null) {
+                    fetchUserPhoto(user.getUserId());
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                // Handle error (e.g., user not found in DB)
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void fetchUserPhoto(int userId) {
+        // Call PhotoRepository to get the primary photo
+        PhotoRepository.getPrimaryPhoto(userId, getActivity(), new PhotoRepository.OnPhotoListener() {
+            @Override
+            public void onSuccess(Photo photo) {
+                // Photo fetched successfully
+                if (photo != null && photo.getPhotoUrl() != null) {
+                    loadPhotoIntoView(photo.getPhotoUrl());
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                // It's okay if this fails (maybe user hasn't uploaded a photo yet)
+                // We just keep showing the initials
+                Log.e("ProfileFragment", "Photo fetch failed: " + error);
+            }
+        });
+    }
+
+    private void updateUserUI(User user) {
+        if (user == null) return;
+
+        // Set Name
+        String name = user.getFullName() != null ? user.getFullName() : "User";
+        txtName.setText(name);
+
+        // Set Email
+        String email = user.getEmail() != null ? user.getEmail() : "";
+        txtEmail.setText(email);
+
+        // Set Initials
+        txtInitials.setText(getInitials(name));
+        txtInitials.setVisibility(View.VISIBLE); // Show initials by default
+    }
+
+    private void loadPhotoIntoView(String url) {
+        // Use your helper to load the image
+        photoHelper.loadProfileImage(imgProfile, url);
+
+        // Hide the initials because the photo is now covering them
+        txtInitials.setVisibility(View.INVISIBLE);
+    }
+
+    private String getInitials(String fullName) {
+        if (fullName == null || fullName.isEmpty()) return "?";
+        String[] parts = fullName.split(" ");
+        StringBuilder initials = new StringBuilder();
+        for (String part : parts) {
+            if (!part.isEmpty()) {
+                initials.append(part.charAt(0));
+                if (initials.length() >= 2) break;
+            }
+        }
+        return initials.toString().toUpperCase();
     }
 }
